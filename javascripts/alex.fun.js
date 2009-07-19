@@ -1,5 +1,13 @@
 Alex = Class.create({
 	initialize: function(options) {
+		if (typeof(console) == 'undefined') {
+			var Console = Class.create({
+				log: function() {},
+				error: function() {}
+			});
+			 console = new Console();
+		}
+		debug = true;
 		document.observe('keydown', this.keyFunk);
 	},
 
@@ -26,11 +34,18 @@ Alex = Class.create({
 		if (left < 50)	style.left = left + '%';
 		else 						style.right = 100-left + '%';
 
-//console.log("top="+top+", left="+left);
-console.log(style);
+		if (debug) {
+			console.log(style);
+			console.log(keyEvent);
+		}
 		this._element.setStyle(style);
 		this._element.hide();
   	Effect.Appear(this._element.id, { duration: 0.2 });
-		Event.stop(keyEvent);
+		if(keyEvent.keyCode == 87 || 
+			keyEvent.keyCode == 82 ||
+			$R(48,57).include(keyEvent.keyCode) && (keyEvent.altKey || keyEvent.metaKey)) {
+		} else {
+			Event.stop(keyEvent);
+		}
 	}
 });
